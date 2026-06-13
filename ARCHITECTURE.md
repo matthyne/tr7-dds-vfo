@@ -39,7 +39,9 @@ include/
   display.h     — TFT_eSPI wrapper, colour palette, layout zones, sprite rendering
   touch_ui.h    — Touch zone hit-testing and TouchEvent generation
 src/
-  main.cpp      — Arduino setup/loop, FreeRTOS mutex, encoder ISR, scan, mode polling
+  main.cpp           — Arduino setup/loop, FreeRTOS mutex, encoder ISR, scan, mode polling
+  display_test.ino   — Display/touch smoke test (env:display_test, excluded from main build)
+  touch_calibrate.ino — Touch calibration sketch (env:touch_calibrate, excluded from main build)
 ```
 
 ## Concurrency Model
@@ -174,3 +176,11 @@ Encoder button: short press cycles step rate up through `STEP_RATES[]`; long pre
 PlatformIO, `espressif32` platform, `arduino` framework. TFT_eSPI is configured entirely via `-D` build flags in `platformio.ini` — the library's `User_Setup.h` is not edited directly. `User_Setup.h` in the project root documents the same settings for reference/Arduino IDE use.
 
 Partition scheme: `min_spiffs.csv` reserves SPIFFS for smooth fonts.
+
+`src/` holds three Arduino sketches, each with its own `setup()`/`loop()`: `main.cpp` (the firmware), `display_test.ino`, and `touch_calibrate.ino`. PlatformIO compiles everything in `src/` by default, which would multiply-define `setup()`/`loop()`, so each gets its own environment with a `build_src_filter` selecting only that file:
+
+- `env:tr7_vfo` (default) — `main.cpp` only
+- `env:display_test` — `display_test.ino` only
+- `env:touch_calibrate` — `touch_calibrate.ino` only
+
+The two diagnostic environments `extend = env:tr7_vfo`, inheriting the same board, build flags, and library deps.

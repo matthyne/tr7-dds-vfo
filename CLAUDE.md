@@ -6,12 +6,15 @@ ESP32 firmware replacing the VFO/PTO of a Ten-Tec TR7 HF transceiver. Target boa
 
 ## Build system
 
-PlatformIO (`platformio.ini`). Single environment `tr7_vfo`. TFT_eSPI is configured entirely via `-D` build flags — do **not** edit the library's own `User_Setup.h`. `User_Setup.h` at the project root is reference/Arduino IDE documentation only.
+PlatformIO (`platformio.ini`). Default environment `tr7_vfo` builds `src/main.cpp` only — `build_src_filter` excludes the diagnostic sketches below, since every `.ino`/`.cpp` in `src/` would otherwise be compiled into one binary (multiple `setup()`/`loop()` → link error). TFT_eSPI is configured entirely via `-D` build flags — do **not** edit the library's own `User_Setup.h`. `User_Setup.h` at the project root is reference/Arduino IDE documentation only.
 
 ```bash
-pio run              # build
-pio run -t upload    # flash
-pio device monitor   # serial console 115200
+pio run                              # build main firmware (tr7_vfo)
+pio run -t upload                    # flash main firmware
+pio device monitor                   # serial console 115200
+
+pio run -e display_test -t upload    # flash display/touch smoke test
+pio run -e touch_calibrate -t upload # flash touch calibration sketch
 ```
 
 ## Module layout
@@ -21,11 +24,13 @@ pio device monitor   # serial console 115200
 | `include/config.h` | All pin assignments and constants — edit here for wiring changes |
 | `include/bands.h` | CB (120-channel) and HF Marine (22-channel) frequency tables |
 | `include/dds.h` | AD9851 bit-bang driver |
-| `include/memory.h` | NVS memory manager (10 banks × 10 slots) |
+| `include/memory.h` | NVS memory manager (10 banks × 10 slots); canonical `MemSlot` definition |
 | `include/vfo_state.h` | Central state struct; all transitions are methods |
 | `include/display.h` | TFT_eSPI wrapper; colour palette; sprite rendering |
 | `include/touch_ui.h` | Touch zone hit-testing; TouchEvent enum |
 | `src/main.cpp` | Arduino setup/loop; FreeRTOS mutex; encoder; scan; mode polling |
+| `src/display_test.ino` | Display/touch smoke test (`env:display_test`, not part of main build) |
+| `src/touch_calibrate.ino` | Touch calibration sketch (`env:touch_calibrate`, not part of main build) |
 
 ## Key design constraints
 
@@ -47,4 +52,4 @@ pio device monitor   # serial console 115200
 
 **Wire real S-meter AGC** → replace `readSMeter()` body in `main.cpp` with `return analogRead(SMETER_PIN) / 341.0f;`.
 
-**Touch calibration** → run `src/touch_calibrate.ino`, paste 5 values into `TOUCH_CAL_DATA` in `include/display.h`.
+**Touch calibration** → run `pio run -e touch_calibrate -t upload`, paste 5 values into `TOUCH_CAL_DATA` in `include/display.h`.

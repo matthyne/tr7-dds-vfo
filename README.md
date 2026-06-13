@@ -60,8 +60,8 @@ Requires [PlatformIO](https://platformio.org/).
 
 ```bash
 cd tr7-dds-vfo
-pio run                     # build
-pio run -t upload           # flash
+pio run                     # build main firmware
+pio run -t upload           # flash main firmware
 pio device monitor          # 115200 baud serial console
 ```
 
@@ -69,7 +69,11 @@ TFT_eSPI is configured entirely via build flags in `platformio.ini` — no libra
 
 ### Touch calibration
 
-Run the calibration sketch in `src/touch_calibrate.ino` once, read the five values from serial output, and update `TOUCH_CAL_DATA` in `include/display.h`. The defaults are approximate for the CYD.
+Build and flash the calibration sketch with `pio run -e touch_calibrate -t upload`, read the five values from serial output, and update `TOUCH_CAL_DATA` in `include/display.h`. The defaults are approximate for the CYD.
+
+### Display/touch smoke test
+
+`pio run -e display_test -t upload` flashes a standalone sketch that exercises the display, fonts, sprites, and touch — useful for checking wiring and `TFT_eSPI` config before building the full firmware.
 
 ## Configuration
 
