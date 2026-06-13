@@ -17,12 +17,6 @@ struct MemSlot {
     uint32_t stepHz;
     char     label[MEM_LABEL_LEN + 1];
     char     mode[4];       // "USB" / "LSB" / "CW" / "AM" / "FM"
-
-    // Derived — not stored, calculated on recall
-    float dialMHz() const {
-        // Caller must pass offset externally — see MemoryManager::dialMHz()
-        return vfoHz / 1e6f;
-    }
 };
 
 class MemoryManager {

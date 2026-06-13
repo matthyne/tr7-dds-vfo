@@ -7,6 +7,8 @@
 #pragma once
 #include <TFT_eSPI.h>
 #include <SPI.h>
+#include "config.h"
+#include "memory.h"
 
 // ------------------------------------------------------------
 //  Colour palette — dark radio theme
@@ -303,7 +305,7 @@ public:
 
     // Draw memory zone — bank tabs A-J, then 10 cells
     void drawMemZone(int activeBank, int activeCell,
-                     struct MemSlot* bank, int bankCount) {
+                     MemSlot* bank, int bankCount) {
         // Bank tabs
         int tabW = (SCR_W - 2*MARGIN - 9*2) / 10;
         for (int i = 0; i < 10; i++) {
@@ -337,10 +339,11 @@ public:
 
             tft.setTextFont(1);
             if (filled) {
-                // Frequency (small)
+                // Frequency (small) — dial freq = VFO + band offset
                 tft.setTextColor(act ? C_PURPLE : C_GRAY, bg);
                 char freq[10];
-                snprintf(freq, sizeof(freq), "%.2f", bank[i].dialMHz);
+                float dialMHz = (bank[i].vfoHz + BANDS[bank[i].bandIdx].offset) / 1e6f;
+                snprintf(freq, sizeof(freq), "%.2f", dialMHz);
                 int fw = tft.textWidth(freq);
                 tft.drawString(freq, x + (cellW-fw)/2, y + 3);
                 // Label
@@ -408,18 +411,4 @@ public:
     bool getTouch(uint16_t* x, uint16_t* y) {
         return tft.getTouch(x, y);
     }
-};
-
-// ------------------------------------------------------------
-//  Memory slot structure (used by drawMemZone above)
-// ------------------------------------------------------------
-struct MemSlot {
-    bool     valid;
-    float    dialMHz;
-    uint32_t vfoHz;
-    uint8_t  bandIdx;
-    uint8_t  modeIdx;
-    uint32_t stepHz;
-    char     label[9];   // 8 chars + null
-    char     mode[4];    // "USB" etc
 };

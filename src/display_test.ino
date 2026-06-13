@@ -16,6 +16,7 @@
 // ============================================================
 #include <TFT_eSPI.h>
 #include <SPI.h>
+#include "display.h"   // for TOUCH_CAL_DATA
 
 TFT_eSPI    tft;
 TFT_eSprite spr = TFT_eSprite(&tft);
