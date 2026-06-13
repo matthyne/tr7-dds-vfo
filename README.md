@@ -97,18 +97,18 @@ Key constants:
 │ USB  RIT  LOCK  [mem badge]  EXT │  top bar
 ├──────────────────────────────────┤
 │          14.100 MHz              │  large dial freq
-│  VFO 5.100000 MHz  RIT +0.50kHz │
+│  VFO 5.100000 MHz  RIT +0.50kHz  │
 │  FTW 0x0A3D70A4                  │
 ├──────────────────────────────────┤
-│ 1Hz 10Hz 100Hz 1kHz 10kHz 100kHz│  step row
+│ 1Hz 10Hz 100Hz 1kHz 10kHz 100kHz │  step row
 ├──────────────────────────────────┤
-│ 160m 80m 40m 30m 20m 17m        │  band zone
-│ 15m  12m 11m 10m Mar            │
+│ 160m 80m 40m 30m 20m 17m         │  band zone
+│ 15m  12m 11m 10m Mar             │
 ├──────────────────────────────────┤
-│ A  B  C  D  E  F  G  H  I  J   │  memory bank tabs
-│ [0][1][2][3][4][5][6][7][8][9] │  memory cells
+│ A  B  C  D  E  F  G  H  I  J     │  memory bank tabs
+│ [0][1][2][3][4][5][6][7][8][9]   │  memory cells
 ├──────────────────────────────────┤
-│ RIT  LOCK  SCAN  M-SAVE  ●●●●● │  bottom bar + S-meter
+│ RIT  LOCK  SCAN  M-SAVE  ●●●●●   │  bottom bar + S-meter
 └──────────────────────────────────┘
 ```
 
