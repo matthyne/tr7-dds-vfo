@@ -1,6 +1,6 @@
 # TR7 DDS VFO
 
-Replacement VFO firmware for the Ten-Tec TR7 HF transceiver. Runs on an ESP32-2432S028 ("Cheap Yellow Display") and drives an AD9851 DDS chip to replace the TR7's original PTO with a stable, touchscreen-controlled oscillator.
+Replacement VFO firmware for the Drake TR-7 HF transceiver. Runs on an ESP32-2432S028 ("Cheap Yellow Display") and drives an AD9851 DDS chip to replace the TR-7's original PTO with a stable, touchscreen-controlled oscillator.
 
 ## Features
 

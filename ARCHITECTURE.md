@@ -2,7 +2,7 @@
 
 ## Overview
 
-ESP32-based DDS VFO replacement for the Ten-Tec TR7 HF transceiver. The firmware drives an AD9851 DDS chip via bit-bang serial, producing a clean 5.0–5.5 MHz signal that replaces the TR7's original PTO (Permeability-Tuned Oscillator). A touchscreen display on the ESP32-2432S028 ("Cheap Yellow Display") provides frequency readout, band selection, memory recall, and function controls.
+ESP32-based DDS VFO replacement for the Drake TR-7 HF transceiver. The firmware drives an AD9851 DDS chip via bit-bang serial, producing a clean 5.0–5.5 MHz signal that replaces the TR-7's original PTO (Permeability-Tuned Oscillator). A touchscreen display on the ESP32-2432S028 ("Cheap Yellow Display") provides frequency readout, band selection, memory recall, and function controls.
 
 ## Hardware Platform
 
