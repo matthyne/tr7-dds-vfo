@@ -15,6 +15,62 @@ ESP32-based DDS VFO replacement for the Drake TR-7 HF transceiver. The firmware 
 | Encoder | Quadrature + push button | GPIO 34/35/0 |
 | TR7 mode switch | 5-line grounded bus | GPIO 36/39/34/35 |
 
+### Block diagram — system overview
+
+The ESP32 module is a standalone add-on with two connections back to the TR7 chassis: the AD9851's RF output feeds the mixer where the PTO used to connect, and five GPIOs sense the existing mode switch so the display can track USB/LSB/CW/AM/FM.
+
+```
+  ===================================================
+   DRAKE TR-7 TRANSCEIVER (chassis)
+  ===================================================
+   - 1st mixer / IF strip  <-- PTO physically removed
+   - Mode switch wafer (USB / LSB / CW / AM / FM)
+
+            |  VFO injection            ^  5 mode-sense
+            |  5.0-5.5 MHz               |  lines (one grounded
+            |  (AD9851 output            |  per mode position,
+            |   replaces PTO)            |  10k pull-ups to 3V3)
+            v                            |
+  ===================================================
+   ESP32-2432S028 "Cheap Yellow Display" — DDS VFO PCB
+  ===================================================
+```
+
+### Block diagram — ESP32 module internals
+
+```
+                 +---------------------------------------+
+                 |          ESP32-WROOM-32 (CYD)          |
+                 |-----------------------------------------|
+                 | Core 0 (loop): display refresh, touch  |
+                 |   UI, NVS memory, scan timer, TR7 mode |
+                 |   polling                                |
+                 | Core 1 (setup): encoder ISR (PCNT),     |
+                 |   AD9851 writes                          |
+                 | stateMutex guards shared VFOState        |
+                 +---------------------------------------+
+                  |          |             |            |
+  VSPI (shared,   |          | bit-bang    |  PCNT      | GPIO in,
+  transactions on)|          | serial      |  hardware  | pull-up
+  SCLK14 MOSI13   |          | CLK25 DATA26|  A=34 B=35 | USB36 LSB39
+  MISO12 CS15 DC2 |          | FQ_UD27     |  BTN=0     | CW34* AM35*
+  BL21 TOUCH_CS33 |          | RESET32     |  (boot btn)| FM=-- (n/c)
+        v         |          v             v            v
++------------------+  +----------------+ +-----------+ +-------------------+
+| ILI9341 320x240   |  | AD9851 DDS     | | Rotary    | | TR7 mode switch    |
+| TFT + XPT2046     |  | 25MHz TCXO     | | encoder   | | 5-line wafer       |
+| resistive touch   |  | x6 PLL=180MHz  | | + push    | | (*CW/AM share      |
+| (shared SPI bus)  |  | -> 5.0-5.5MHz  | | button    | |  pins with the     |
++------------------+  | -> TR7 mixer   | +-----------+ |  encoder A/B —     |
+                       +----------------+               |  poll-only, per    |
+                                                         |  config.h)         |
+                                                         +-------------------+
+```
+
+**CW34/AM35 pin sharing** with `ENC_A`/`ENC_B` is deliberate (per comments in `config.h`) — those two mode lines are poll-only since the encoder owns the PCNT/interrupt capability on those pins.
+
+**Loose end**: `display.h` defines `TOUCH_IRQ 36` but it's never read anywhere in the firmware (XPT2046 is polled via SPI, not via IRQ), and GPIO36 is already used for `MODE_USB`. It's dead code rather than a real conflict, but worth knowing if you ever wire the touch IRQ pin.
+
 ### SPI bus sharing
 
 The ILI9341 display and XPT2046 touch controller share the VSPI bus. `SUPPORT_TRANSACTIONS` is enabled in TFT_eSPI to arbitrate correctly. DMA (`ESP32_DMA`) offloads display writes from the CPU.
