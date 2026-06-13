@@ -1,5 +1,5 @@
 // ============================================================
-//  touch_calibrate.ino
+//  touch_calibrate.cpp
 //  Run this sketch ONCE to calibrate the XPT2046 touch panel.
 //  Follow the on-screen prompts — tap the crosshairs in each
 //  corner when asked.
@@ -10,6 +10,7 @@
 //  You do NOT need to run this sketch again unless you
 //  change the display rotation or replace the hardware.
 // ============================================================
+#include <Arduino.h>
 #include <TFT_eSPI.h>
 
 TFT_eSPI tft = TFT_eSPI();

@@ -40,8 +40,8 @@ include/
   touch_ui.h    — Touch zone hit-testing and TouchEvent generation
 src/
   main.cpp           — Arduino setup/loop, FreeRTOS mutex, encoder ISR, scan, mode polling
-  display_test.ino   — Display/touch smoke test (env:display_test, excluded from main build)
-  touch_calibrate.ino — Touch calibration sketch (env:touch_calibrate, excluded from main build)
+  display_test.cpp   — Display/touch smoke test (env:display_test, excluded from main build)
+  touch_calibrate.cpp — Touch calibration sketch (env:touch_calibrate, excluded from main build)
 ```
 
 ## Concurrency Model
@@ -177,10 +177,12 @@ PlatformIO, `espressif32` platform, `arduino` framework. TFT_eSPI is configured 
 
 Partition scheme: `min_spiffs.csv` reserves SPIFFS for smooth fonts.
 
-`src/` holds three Arduino sketches, each with its own `setup()`/`loop()`: `main.cpp` (the firmware), `display_test.ino`, and `touch_calibrate.ino`. PlatformIO compiles everything in `src/` by default, which would multiply-define `setup()`/`loop()`, so each gets its own environment with a `build_src_filter` selecting only that file:
+`src/` holds three sources, each with its own `setup()`/`loop()`: `main.cpp` (the firmware), `display_test.cpp`, and `touch_calibrate.cpp`. PlatformIO compiles everything in `src/` by default, which would multiply-define `setup()`/`loop()`, so each gets its own environment with a `build_src_filter` selecting only that file:
 
 - `env:tr7_vfo` (default) — `main.cpp` only
-- `env:display_test` — `display_test.ino` only
-- `env:touch_calibrate` — `touch_calibrate.ino` only
+- `env:display_test` — `display_test.cpp` only
+- `env:touch_calibrate` — `touch_calibrate.cpp` only
 
-The two diagnostic environments `extend = env:tr7_vfo`, inheriting the same board, build flags, and library deps.
+The two diagnostic environments `extends = env:tr7_vfo`, inheriting the same board, build flags, and library deps.
+
+Note: the diagnostic sources are `.cpp`, not `.ino`. PlatformIO's `.ino`→`.cpp` converter globs `*.ino` directly from `src/` and merges *all* `.ino` files into a single translation unit regardless of `build_src_filter`, which would collide multiple `setup()`/`loop()` definitions. Using `.cpp` (with an explicit `#include <Arduino.h>`) avoids that converter entirely and lets `build_src_filter` work as expected.

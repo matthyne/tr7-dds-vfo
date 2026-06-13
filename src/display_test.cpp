@@ -1,5 +1,5 @@
 // ============================================================
-//  display_test.ino
+//  display_test.cpp
 //  Smoke test — run this before building the full VFO firmware.
 //  Verifies:
 //    1. TFT_eSPI config is correct (display initialises)
@@ -14,6 +14,7 @@
 //  band buttons, S-meter bar. Touching the screen prints
 //  calibrated x/y to serial and highlights the touched region.
 // ============================================================
+#include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include "display.h"   // for TOUCH_CAL_DATA

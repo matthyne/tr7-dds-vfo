@@ -380,7 +380,7 @@ void setup() {
                   mem.countFilled(0));
 
     // Encoder — uses PCNT hardware counters, handles debounce
-    ESP32Encoder::useInternalWeakPullResistors = puType::up;
+    ESP32Encoder::useInternalWeakPullResistors = puType::UP;
     encoder.attachHalfQuad(ENC_A, ENC_B);
     encoder.clearCount();
 

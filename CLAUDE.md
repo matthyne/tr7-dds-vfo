@@ -37,8 +37,8 @@ pio run -e touch_calibrate -t upload # flash touch calibration sketch
 | `include/display.h` | TFT_eSPI wrapper; colour palette; sprite rendering |
 | `include/touch_ui.h` | Touch zone hit-testing; TouchEvent enum |
 | `src/main.cpp` | Arduino setup/loop; FreeRTOS mutex; encoder; scan; mode polling |
-| `src/display_test.ino` | Display/touch smoke test (`env:display_test`, not part of main build) |
-| `src/touch_calibrate.ino` | Touch calibration sketch (`env:touch_calibrate`, not part of main build) |
+| `src/display_test.cpp` | Display/touch smoke test (`env:display_test`, not part of main build) |
+| `src/touch_calibrate.cpp` | Touch calibration sketch (`env:touch_calibrate`, not part of main build) |
 
 ## Key design constraints
 
